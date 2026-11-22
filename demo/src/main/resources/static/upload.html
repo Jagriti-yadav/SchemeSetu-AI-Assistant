@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Government Scheme PDF Upload</title>
+</head>
+<body>
+
+    <h2>Government Scheme PDF Upload</h2>
+
+    <form id="uploadForm">
+        <input type="file" id="pdfFile" accept=".pdf" required>
+        <button type="submit">Upload PDF</button>
+    </form>
+
+    <h3>Response:</h3>
+    <pre id="result">Select a PDF to begin.</pre>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const fileInput = document.getElementById("pdfFile");
+            const result = document.getElementById("result");
+
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            result.textContent = "Uploading PDF...";
+
+            try {
+                const response = await fetch("/api/documents/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                result.textContent = "Upload failed: " + error.message;
+            }
+        });
+    </script>
+
+</body>
+</html>
